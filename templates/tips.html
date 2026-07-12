@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Tippers · Vinayaka Chavithi Committee{% endblock %}
+{% block body_class %}app-page{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">Contributions</p>
+    <h1>Tippers</h1>
+    <p class="hero-sub">Total collected: <strong>₹{{ "%.2f"|format(total) }}</strong> from {{ tips|length }} entr{{ 'y' if tips|length == 1 else 'ies' }}.</p>
+  </div>
+</section>
+
+<section class="form-panel">
+  <h2>Add a tip</h2>
+  <form method="POST" action="{{ url_for('tips') }}" class="inline-form">
+    <label class="field">
+      <span>Tipper name</span>
+      <input type="text" name="name" placeholder="e.g. Ramesh Uncle" required>
+    </label>
+    <label class="field">
+      <span>Amount (₹)</span>
+      <input type="number" name="amount" step="0.01" min="0.01" placeholder="e.g. 500" required>
+    </label>
+    <button type="submit" class="btn btn-primary">Add Tip</button>
+  </form>
+</section>
+
+<section class="table-panel">
+  <div class="table-panel-head">
+    <h2>All tips</h2>
+    <input type="text" id="tipFilter" class="table-search" placeholder="Search by name…">
+  </div>
+
+  {% if tips %}
+  <div class="table-wrap">
+    <table id="tipsTable">
+      <thead>
+        <tr><th>Tipper</th><th class="num">Amount</th><th>When</th><th class="actions-col">Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for t in tips %}
+        <tr>
+          <td data-label="Tipper">{{ t.tipper_name }}</td>
+          <td data-label="Amount" class="num amount-positive">₹{{ "%.2f"|format(t.amount) }}</td>
+          <td data-label="When">{{ t.timestamp.strftime('%d %b %Y, %I:%M %p') }}</td>
+          <td data-label="Actions" class="actions-col">
+            <a href="{{ url_for('edit_tip', tip_id=t.id) }}" class="icon-btn" title="Edit">✏️</a>
+            <form method="POST" action="{{ url_for('delete_tip', tip_id=t.id) }}" class="inline-delete" onsubmit="return confirm('Delete this tip entry?');">
+              <button type="submit" class="icon-btn" title="Delete">🗑️</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="empty-note">No tips yet — add the first contribution above.</p>
+  {% endif %}
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const filterInput = document.getElementById('tipFilter');
+  if (filterInput) {
+    filterInput.addEventListener('input', () => {
+      const q = filterInput.value.trim().toLowerCase();
+      document.querySelectorAll('#tipsTable tbody tr').forEach(row => {
+        const name = row.children[0].textContent.toLowerCase();
+        row.style.display = name.includes(q) ? '' : 'none';
+      });
+    });
+  }
+</script>
+{% endblock %}
