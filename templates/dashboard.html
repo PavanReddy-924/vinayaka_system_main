@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Vinayaka Chavithi Committee{% endblock %}
+{% block body_class %}app-page{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-text">
+    <p class="eyebrow">Ganapati Bappa Morya</p>
+    <h1>Committee Dashboard</h1>
+    <p class="hero-sub">Every rupee in, every rupee out — counted once, correctly.</p>
+  </div>
+  <div class="diya" aria-hidden="true">
+    <svg viewBox="0 0 100 100" class="diya-svg">
+      <ellipse cx="50" cy="72" rx="38" ry="12" class="diya-base" />
+      <path d="M12 72 C12 60 30 58 50 58 C70 58 88 60 88 72" class="diya-bowl" />
+      <path class="diya-flame" d="M50 20 C58 32 60 40 52 48 C46 52 42 46 46 40 C40 44 40 54 50 56 C62 54 64 40 56 28 C54 24 52 21 50 20 Z" />
+    </svg>
+  </div>
+</section>
+
+<section class="stat-strip">
+  <div class="stat-card stat-tips">
+    <span class="stat-label">Total Tips Received</span>
+    <span class="stat-value">₹{{ "%.2f"|format(totals.total_tips) }}</span>
+    <span class="stat-meta">{{ totals.tip_count }} contribution{{ 's' if totals.tip_count != 1 else '' }}</span>
+  </div>
+  <div class="stat-card stat-spent">
+    <span class="stat-label">Total Spent</span>
+    <span class="stat-value">₹{{ "%.2f"|format(totals.total_consumed) }}</span>
+    <span class="stat-meta">{{ totals.consumption_count }} expense{{ 's' if totals.consumption_count != 1 else '' }}</span>
+  </div>
+  <div class="stat-card stat-net">
+    <span class="stat-label">Net Balance In Hand</span>
+    <span class="stat-value">₹{{ "%.2f"|format(totals.net_balance) }}</span>
+    <span class="stat-meta">Tips minus expenses</span>
+  </div>
+</section>
+
+<section class="card-grid">
+  <a href="{{ url_for('tips') }}" class="action-card">
+    <span class="action-icon">🪔</span>
+    <span class="action-title">Add / View Tippers</span>
+    <span class="action-desc">Record who contributed and how much.</span>
+  </a>
+  <a href="{{ url_for('consumptions') }}" class="action-card">
+    <span class="action-icon">🧾</span>
+    <span class="action-title">Add / View Expenses</span>
+    <span class="action-desc">Log what the money was spent on.</span>
+  </a>
+  <a href="{{ url_for('collections') }}" class="action-card">
+    <span class="action-icon">📊</span>
+    <span class="action-title">Collections Report</span>
+    <span class="action-desc">Gross total, and net after expenses.</span>
+  </a>
+  <a href="{{ url_for('history') }}" class="action-card">
+    <span class="action-icon">📜</span>
+    <span class="action-title">Full Transaction History</span>
+    <span class="action-desc">Every tip and expense, in one ledger.</span>
+  </a>
+</section>
+
+<section class="recent-grid">
+  <div class="recent-panel">
+    <div class="recent-head">
+      <h2>Recent Tips</h2>
+      <a href="{{ url_for('tips') }}">View all →</a>
+    </div>
+    {% if recent_tips %}
+    <ul class="recent-list">
+      {% for t in recent_tips %}
+      <li>
+        <span class="recent-name">{{ t.tipper_name }}</span>
+        <span class="recent-amount amount-positive">₹{{ "%.2f"|format(t.amount) }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="empty-note">No tips recorded yet. Add the first one from the Tippers page.</p>
+    {% endif %}
+  </div>
+
+  <div class="recent-panel">
+    <div class="recent-head">
+      <h2>Recent Expenses</h2>
+      <a href="{{ url_for('consumptions') }}">View all →</a>
+    </div>
+    {% if recent_consumptions %}
+    <ul class="recent-list">
+      {% for c in recent_consumptions %}
+      <li>
+        <span class="recent-name">{{ c.purpose }}</span>
+        <span class="recent-amount amount-negative">− ₹{{ "%.2f"|format(c.amount) }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="empty-note">No expenses recorded yet.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

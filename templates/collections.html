@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Collections · Vinayaka Chavithi Committee{% endblock %}
+{% block body_class %}app-page{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">Report</p>
+    <h1>Collections</h1>
+    <p class="hero-sub">Two ways to look at the money — pick whichever the committee needs right now.</p>
+  </div>
+</section>
+
+<div class="tabs">
+  <a href="{{ url_for('collections', view='gross') }}" class="tab {{ 'tab-active' if view == 'gross' }}">
+    Total Collected (without subtracting expenses)
+  </a>
+  <a href="{{ url_for('collections', view='net') }}" class="tab {{ 'tab-active' if view == 'net' }}">
+    Net Balance (tips minus expenses)
+  </a>
+</div>
+
+{% if view == 'net' %}
+<section class="report-card report-net">
+  <span class="report-label">Net Balance In Hand</span>
+  <span class="report-value">₹{{ "%.2f"|format(totals.net_balance) }}</span>
+  <div class="report-breakdown">
+    <div>
+      <span>Total Tips</span>
+      <strong class="amount-positive">₹{{ "%.2f"|format(totals.total_tips) }}</strong>
+    </div>
+    <div class="breakdown-op">−</div>
+    <div>
+      <span>Total Expenses</span>
+      <strong class="amount-negative">₹{{ "%.2f"|format(totals.total_consumed) }}</strong>
+    </div>
+    <div class="breakdown-op">=</div>
+    <div>
+      <span>Net Balance</span>
+      <strong>₹{{ "%.2f"|format(totals.net_balance) }}</strong>
+    </div>
+  </div>
+  <p class="report-note">This is what should physically be left in the committee's hands right now.</p>
+</section>
+{% else %}
+<section class="report-card report-gross">
+  <span class="report-label">Total Collected (Gross)</span>
+  <span class="report-value">₹{{ "%.2f"|format(totals.total_tips) }}</span>
+  <p class="report-note">{{ totals.tip_count }} contribution{{ 's' if totals.tip_count != 1 else '' }} recorded so far — this figure does not subtract any expenses.</p>
+</section>
+{% endif %}
+{% endblock %}

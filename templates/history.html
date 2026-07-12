@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}History · Vinayaka Chavithi Committee{% endblock %}
+{% block body_class %}app-page{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">Ledger</p>
+    <h1>Transaction History</h1>
+    <p class="hero-sub">Every tip and expense, newest first — the full paper trail.</p>
+  </div>
+</section>
+
+<section class="table-panel">
+  {% if ledger %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Type</th><th>Description</th><th class="num">Amount</th><th>When</th></tr>
+      </thead>
+      <tbody>
+        {% for row in ledger %}
+        <tr>
+          <td data-label="Type">
+            {% if row.type == 'tip' %}
+              <span class="pill pill-tip">Tip</span>
+            {% else %}
+              <span class="pill pill-expense">Expense</span>
+            {% endif %}
+          </td>
+          <td data-label="Description">{{ row.label }}</td>
+          <td data-label="Amount" class="num {{ 'amount-positive' if row.type == 'tip' else 'amount-negative' }}">
+            {{ '+' if row.type == 'tip' else '−' }} ₹{{ "%.2f"|format(row.amount) }}
+          </td>
+          <td data-label="When">{{ row.timestamp.strftime('%d %b %Y, %I:%M %p') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="empty-note">Nothing recorded yet. Add a tip or an expense to see it here.</p>
+  {% endif %}
+</section>
+{% endblock %}

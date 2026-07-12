@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Edit entry · Vinayaka Chavithi Committee{% endblock %}
+{% block body_class %}app-page{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">Correction</p>
+    <h1>Edit {{ 'Tip' if kind == 'tip' else 'Expense' }}</h1>
+    <p class="hero-sub">Fix a mistyped amount or name — no need to delete and re-add.</p>
+  </div>
+</section>
+
+<section class="form-panel form-panel-narrow">
+  <form method="POST" class="stacked-form">
+    {% if kind == 'tip' %}
+      <label class="field">
+        <span>Tipper name</span>
+        <input type="text" name="name" value="{{ entry.tipper_name }}" required>
+      </label>
+    {% else %}
+      <label class="field">
+        <span>Purpose</span>
+        <input type="text" name="purpose" value="{{ entry.purpose }}" required>
+      </label>
+    {% endif %}
+    <label class="field">
+      <span>Amount (₹)</span>
+      <input type="number" name="amount" step="0.01" min="0.01" value="{{ entry.amount }}" required>
+    </label>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Save changes</button>
+      <a href="{{ url_for('tips') if kind == 'tip' else url_for('consumptions') }}" class="btn btn-ghost">Cancel</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

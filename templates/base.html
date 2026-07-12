@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Vinayaka Chavithi Committee{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Poppins:wght@400;500;600;700&family=Roboto+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+<div class="garland" aria-hidden="true">
+  {% for i in range(24) %}<span></span>{% endfor %}
+</div>
+
+{% if session.user %}
+<header class="topbar">
+  <a class="brand" href="{{ url_for('dashboard') }}">
+    <span class="brand-mark">ॐ</span>
+    <span class="brand-text">
+      <strong>Vinayaka Chavithi</strong>
+      <small>Committee Fund Tracker</small>
+    </span>
+  </a>
+  <nav class="topnav">
+    <a href="{{ url_for('dashboard') }}" class="{{ 'active' if request.endpoint == 'dashboard' }}">Dashboard</a>
+    <a href="{{ url_for('tips') }}" class="{{ 'active' if request.endpoint in ['tips','edit_tip'] }}">Tippers</a>
+    <a href="{{ url_for('consumptions') }}" class="{{ 'active' if request.endpoint in ['consumptions','edit_consumption'] }}">Expenses</a>
+    <a href="{{ url_for('collections') }}" class="{{ 'active' if request.endpoint == 'collections' }}">Collections</a>
+    <a href="{{ url_for('history') }}" class="{{ 'active' if request.endpoint == 'history' }}">History</a>
+  </nav>
+  <div class="topbar-user">
+    <span>{{ session.user }}</span>
+    <a href="{{ url_for('logout') }}" class="logout-btn">Log out</a>
+  </div>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+<nav class="topnav-mobile" id="mobileNav">
+  <a href="{{ url_for('dashboard') }}">Dashboard</a>
+  <a href="{{ url_for('tips') }}">Tippers</a>
+  <a href="{{ url_for('consumptions') }}">Expenses</a>
+  <a href="{{ url_for('collections') }}">Collections</a>
+  <a href="{{ url_for('history') }}">History</a>
+  <a href="{{ url_for('logout') }}">Log out</a>
+</nav>
+{% endif %}
+
+<main class="page">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-stack">
+        {% for category, message in messages %}
+          <div class="flash flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</main>
+
+<script>
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const mobileNav = document.getElementById('mobileNav');
+  if (hamburgerBtn) {
+    hamburgerBtn.addEventListener('click', () => {
+      const open = mobileNav.classList.toggle('open');
+      hamburgerBtn.classList.toggle('open', open);
+      hamburgerBtn.setAttribute('aria-expanded', open);
+    });
+  }
+
+  // Auto-dismiss flash messages
+  document.querySelectorAll('.flash').forEach((el, i) => {
+    setTimeout(() => el.classList.add('fade-out'), 3500 + i * 200);
+    setTimeout(() => el.remove(), 4200 + i * 200);
+  });
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Expenses · Vinayaka Chavithi Committee{% endblock %}
+{% block body_class %}app-page{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">Expenses</p>
+    <h1>Consumptions</h1>
+    <p class="hero-sub">Total spent: <strong>₹{{ "%.2f"|format(total) }}</strong> across {{ consumptions|length }} entr{{ 'y' if consumptions|length == 1 else 'ies' }}.</p>
+  </div>
+</section>
+
+<section class="form-panel">
+  <h2>Record an expense</h2>
+  <form method="POST" action="{{ url_for('consumptions') }}" class="inline-form">
+    <label class="field">
+      <span>Purpose</span>
+      <input type="text" name="purpose" placeholder="e.g. Flowers &amp; decoration" required>
+    </label>
+    <label class="field">
+      <span>Amount (₹)</span>
+      <input type="number" name="amount" step="0.01" min="0.01" placeholder="e.g. 800" required>
+    </label>
+    <button type="submit" class="btn btn-primary">Add Consumption</button>
+  </form>
+</section>
+
+<section class="table-panel">
+  <div class="table-panel-head">
+    <h2>All expenses</h2>
+    <input type="text" id="expFilter" class="table-search" placeholder="Search by purpose…">
+  </div>
+
+  {% if consumptions %}
+  <div class="table-wrap">
+    <table id="expTable">
+      <thead>
+        <tr><th>Purpose</th><th class="num">Amount</th><th>When</th><th class="actions-col">Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for c in consumptions %}
+        <tr>
+          <td data-label="Purpose">{{ c.purpose }}</td>
+          <td data-label="Amount" class="num amount-negative">₹{{ "%.2f"|format(c.amount) }}</td>
+          <td data-label="When">{{ c.timestamp.strftime('%d %b %Y, %I:%M %p') }}</td>
+          <td data-label="Actions" class="actions-col">
+            <a href="{{ url_for('edit_consumption', c_id=c.id) }}" class="icon-btn" title="Edit">✏️</a>
+            <form method="POST" action="{{ url_for('delete_consumption', c_id=c.id) }}" class="inline-delete" onsubmit="return confirm('Delete this expense entry?');">
+              <button type="submit" class="icon-btn" title="Delete">🗑️</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="empty-note">No expenses yet — record your first one above.</p>
+  {% endif %}
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const filterInput = document.getElementById('expFilter');
+  if (filterInput) {
+    filterInput.addEventListener('input', () => {
+      const q = filterInput.value.trim().toLowerCase();
+      document.querySelectorAll('#expTable tbody tr').forEach(row => {
+        const purpose = row.children[0].textContent.toLowerCase();
+        row.style.display = purpose.includes(q) ? '' : 'none';
+      });
+    });
+  }
+</script>
+{% endblock %}

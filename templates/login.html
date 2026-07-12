@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Log in · Vinayaka Chavithi Committee{% endblock %}
+{% block body_class %}login-page{% endblock %}
+
+{% block content %}
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-emblem" aria-hidden="true">
+      <svg viewBox="0 0 120 120" class="modak-icon">
+        <path d="M60 18 C40 18 26 34 26 54 C26 82 42 100 60 108 C78 100 94 82 94 54 C94 34 80 18 60 18 Z" />
+        <path d="M60 18 C50 18 42 24 42 32 C42 40 50 44 60 44 C70 44 78 40 78 32 C78 24 70 18 60 18 Z" class="modak-tip" />
+      </svg>
+    </div>
+    <h1 class="login-title">వినాయక చవితి</h1>
+    <p class="login-sub">Committee Fund Tracker</p>
+
+    <form method="POST" action="{{ url_for('login') }}" class="login-form">
+      <label class="field">
+        <span>Username</span>
+        <input type="text" name="username" placeholder="Enter your username" required autofocus>
+      </label>
+      <label class="field">
+        <span>Password</span>
+        <input type="password" name="password" placeholder="Enter your password" required>
+      </label>
+      <button type="submit" class="btn btn-primary btn-block">Log in</button>
+    </form>
+
+    <p class="login-footnote">Committee logins only. Ask an admin if you need access.</p>
+  </div>
+</div>
+{% endblock %}
